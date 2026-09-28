@@ -18,6 +18,18 @@
 
 ---
 
+## Product Links
+
+| Product | Description |
+| :--- | :--- |
+| **Live Demo** | [https://unitseal-app.vercel.app](https://unitseal-app.vercel.app) |
+| **Contract Address** | [`0x2518853d8a6799734ded70857f0cffc26a175c14`](https://robinhoodchain.blockscout.com/address/0x2518853d8a6799734ded70857f0cffc26a175c14) (Robinhood Chain Mainnet `4663`) |
+| **Video Presentation** | [YouTube Video Walkthrough](https://youtu.be/placeholder-unitseal) |
+| **Github repository** | [https://github.com/0xkinno/unitseal](https://github.com/0xkinno/unitseal) |
+| **Track** | Robinhood, Mainnet & MCP |
+
+---
+
 ## The Problem
 
 A treasury operator automating Robinhood Chain Stock Token operations faces an invisible risk: the same token contract address and raw token balance represent a completely different economic position after a corporate action changes the token's multiplier. 
@@ -50,6 +62,10 @@ UNITSEAL is a **two-boundary state-binding system**:
 3. **Review State Seal:** Review the 5 load-bearing questions: Action, Rationale, State Reviewed, Validity, and Signed Execution Payload.
 4. **Trigger Adversarial Break Path:** Check *"Simulate Adversarial State Drift"* to mutate multiplier from $1.0\times$ to $0.5\times$ — observe execution instantly refused.
 5. **Verify Invariants (`/proof`):** Run the Judge Lab to inspect all 10 hard protocol invariants verified onchain.
+
+---
+
+## Product Screenshots
 
 <div align="center">
   <table>
@@ -190,7 +206,7 @@ flowchart TD
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/your-username/unitseal.git
+git clone https://github.com/0xkinno/unitseal.git
 cd unitseal/unitseal-app
 
 # 2. Install dependencies
