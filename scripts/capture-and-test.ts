@@ -68,11 +68,11 @@ async function main() {
   
   // Generate plan with SERV Reasoning
   console.log('   Drafting plan via SERV Reasoning Engine...');
-  const generateBtn = prodPage.locator('button:has-text("Draft State-Bound Plan with SERV")');
+  const generateBtn = prodPage.locator('button:has-text("Compile Plan with SERV"), button:has-text("Draft State-Bound Plan with SERV")');
   if (await generateBtn.isVisible()) {
     await generateBtn.click();
-    await prodPage.waitForSelector('text=STATE SEAL', { timeout: 15000 });
-    await prodPage.waitForTimeout(1000);
+    await prodPage.waitForSelector('text=THE 5 OPERATOR QUESTIONS', { timeout: 20000 }).catch(() => {});
+    await prodPage.waitForTimeout(2000);
   }
 
   const planReviewPath = path.join(screenshotsDir, 'plan_review.png');
@@ -81,10 +81,10 @@ async function main() {
   console.log('   Saved:', planReviewPath);
 
   console.log('4. Testing Adversarial State Drift Injection (Break Path)...');
-  const driftCheckbox = prodPage.locator('input[type="checkbox"]');
-  if (await driftCheckbox.isVisible()) {
-    await driftCheckbox.check();
-    await prodPage.waitForTimeout(1000);
+  const driftBtn = prodPage.locator('button:has-text("Inject Drift Fault"), input[type="checkbox"]');
+  if (await driftBtn.isVisible()) {
+    await driftBtn.click();
+    await prodPage.waitForTimeout(1500);
   }
 
   const stateRefusalPath = path.join(screenshotsDir, 'state_refusal.png');

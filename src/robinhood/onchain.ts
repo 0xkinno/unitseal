@@ -1,19 +1,20 @@
 import { createPublicClient, http, type Address } from 'viem';
 import { toFixed } from '../core/fixedPoint';
 
-const ALCHEMY_MAINNET_RPC =
+const RH_MAINNET_RPC =
+  process.env.NEXT_PUBLIC_RH_RPC_URL ||
   process.env.ALCHEMY_API_KEY ||
-  'https://robinhood-mainnet.g.alchemy.com/v2/alch_7c1383NWPic6jF3NMm54w';
+  'https://rpc.mainnet.chain.robinhood.com';
 const RH_TESTNET_RPC =
-  process.env.NEXT_PUBLIC_RH_RPC_URL || 'https://rpc.testnet.chain.robinhood.com';
+  process.env.NEXT_PUBLIC_RH_TESTNET_RPC_URL || 'https://rpc.testnet.chain.robinhood.com';
 
 export const robinhoodChainMainnet = {
   id: 4663,
   name: 'Robinhood Chain',
   nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
   rpcUrls: {
-    default: { http: [ALCHEMY_MAINNET_RPC] },
-    public: { http: [ALCHEMY_MAINNET_RPC] },
+    default: { http: [RH_MAINNET_RPC] },
+    public: { http: [RH_MAINNET_RPC] },
   },
   blockExplorers: {
     default: { name: 'Blockscout', url: 'https://robinhoodchain.blockscout.com' },
@@ -35,7 +36,7 @@ export const robinhoodChainTestnet = {
 
 export const robinhoodMainnetClient = createPublicClient({
   chain: robinhoodChainMainnet,
-  transport: http(ALCHEMY_MAINNET_RPC),
+  transport: http(RH_MAINNET_RPC),
 });
 
 export const robinhoodTestnetClient = createPublicClient({
@@ -72,7 +73,7 @@ export const STOCK_TOKEN_ABI = [
 
 /**
  * Reads the live onchain uiMultiplier() for a Stock Token (ERC-8056)
- * Queries Robinhood Chain directly
+ * Queries Robinhood Chain Mainnet directly
  */
 export async function readOnchainMultiplier(tokenAddress: Address): Promise<bigint> {
   try {
@@ -91,8 +92,9 @@ export async function readOnchainMultiplier(tokenAddress: Address): Promise<bigi
         functionName: 'uiMultiplier',
       });
       return testnetData;
-    } catch {
-      return toFixed('1.0');
+    } catch (testnetErr) {
+      console.warn(`[Onchain Multiplier] Staticcall failed for ${tokenAddress}:`, error);
+      throw new Error(`Failed to query uiMultiplier() on Robinhood Chain for ${tokenAddress}`);
     }
   }
 }
@@ -110,6 +112,27 @@ export async function readTokenBalance(tokenAddress: Address, account: Address):
     });
     return data;
   } catch {
-    return toFixed('1250.0'); // Treasury reserve balance
+    return 0n;
+  }
+}
+
+/**
+ * Reads token allowance for an address to spender
+ */
+export async function readTokenAllowance(
+  tokenAddress: Address,
+  owner: Address,
+  spender: Address
+): Promise<bigint> {
+  try {
+    const data = await robinhoodMainnetClient.readContract({
+      address: tokenAddress,
+      abi: STOCK_TOKEN_ABI,
+      functionName: 'allowance',
+      args: [owner, spender],
+    });
+    return data;
+  } catch {
+    return 0n;
   }
 }

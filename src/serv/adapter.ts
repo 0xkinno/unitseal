@@ -7,9 +7,11 @@ const DEFAULT_MODEL = 'serv-standard';
 export async function requestServPlan(
   req: ServIntentRequest
 ): Promise<ServStructuredIntent> {
-  const apiKey = process.env.SERV_API_KEY;
-  const baseUrl = process.env.SERV_BASE_URL || DEFAULT_SERV_URL;
-  const model = process.env.SERV_MODEL || DEFAULT_MODEL;
+  const apiKey = (process.env.SERV_API_KEY || '').trim();
+  const rawBase = (process.env.SERV_BASE_URL || DEFAULT_SERV_URL).trim();
+  const cleanBaseUrl = rawBase.replace(/\/chat\/completions\/?$/, '').replace(/\/+$/, '');
+  const endpoint = `${cleanBaseUrl}/chat/completions`;
+  const model = (process.env.SERV_MODEL || DEFAULT_MODEL).trim();
 
   const systemPrompt = `You are the SERV Reasoning Engine configured for UnitSeal Treasury Protocol on Robinhood Chain.
 Your job is to parse unstructured human intent regarding Stock Token operations into a strictly typed canonical execution intent.
@@ -47,7 +49,7 @@ Context:
   }
 
   try {
-    const response = await fetch(`${baseUrl}/chat/completions`, {
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

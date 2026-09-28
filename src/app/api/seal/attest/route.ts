@@ -2,15 +2,20 @@ import { NextResponse } from 'next/server';
 import { privateKeyToAccount } from 'viem/accounts';
 import type { Address, Hex } from 'viem';
 
-const DEFAULT_PRIVATE_KEY =
-  '0xc1221f7f0df0d80cc70ee80d0842d101f0cf983e0fda39486e091bb3bebf72ae' as Hex;
-
 export async function POST(req: Request) {
   try {
-    const { seal, guardAddress = '0x0000000000000000000000000000000000000000' } = await req.json();
+    const { seal, guardAddress } = await req.json();
 
-    const attestorKey =
-      (process.env.UNITSEAL_ATTESTOR_PRIVATE_KEY as Hex) || DEFAULT_PRIVATE_KEY;
+    const attestorKey = process.env.UNITSEAL_ATTESTOR_PRIVATE_KEY as Hex;
+    if (!attestorKey) {
+      throw new Error('UNITSEAL_ATTESTOR_PRIVATE_KEY environment variable is missing.');
+    }
+
+    const effectiveGuard = (guardAddress ||
+      process.env.NEXT_PUBLIC_UNITSEAL_GUARD_ADDRESS ||
+      process.env.UNITSEAL_GUARD_ADDRESS ||
+      '0x2518853d8a6799734ded70857f0cffc26a175c14') as Address;
+
     const account = privateKeyToAccount(attestorKey);
 
     const chainId = BigInt(seal.chainId);
@@ -18,7 +23,7 @@ export async function POST(req: Request) {
       name: 'UnitSealGuard',
       version: '1',
       chainId,
-      verifyingContract: guardAddress as Address,
+      verifyingContract: effectiveGuard,
     } as const;
 
     const types = {

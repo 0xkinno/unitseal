@@ -23,7 +23,7 @@ The following Robinhood Stock Tokens were verified directly on Robinhood Chain M
 
 - **Endpoint:** `POST https://inference-api.openserv.ai/v1/chat/completions`
 - **Model:** `serv-standard`
-- **Authentication:** `Bearer serv_6aba8faf5fccfa8b41934380_d5a0133a14a621835406f35407a5ee97`
+- **Authentication:** `Bearer ${SERV_API_KEY}` (Redacted for security)
 - **Observed Response:**
   ```json
   {
