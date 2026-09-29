@@ -24,7 +24,7 @@
 | :--- | :--- |
 | **Live Demo** | [https://unitseal-app.vercel.app](https://unitseal-app.vercel.app) |
 | **Contract Address** | [`0x2518853d8a6799734ded70857f0cffc26a175c14`](https://robinhoodchain.blockscout.com/address/0x2518853d8a6799734ded70857f0cffc26a175c14) (Robinhood Chain Mainnet `4663`) |
-| **Video Presentation** | [YouTube Video Walkthrough](https://youtu.be/placeholder-unitseal) |
+| **Video Presentation** | [YouTube Video Walkthrough](https://youtu.be/GdUkFfruffY?si=QVzsH13AINEHxBqw) |
 | **Github repository** | [https://github.com/0xkinno/unitseal](https://github.com/0xkinno/unitseal) |
 | **Track** | Robinhood, Mainnet & MCP |
 
